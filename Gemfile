@@ -4,8 +4,8 @@ ruby '3.1.7'
 gem 'rails', '5.2.8'
 gem 'ffi', '1.14.2'
 
-gem 'sass-rails', '~> 5.0.3'
-gem 'uglifier', '>= 2.7.1'
+gem 'sassc-rails', '~> 2.1'
+gem 'uglifier', '>= 4.2.0'
 
 gem 'jquery-rails'
 gem 'bigdecimal', '1.3.5'
