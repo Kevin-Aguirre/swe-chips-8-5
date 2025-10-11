@@ -26,7 +26,7 @@ end
 
 group :production do
   gem 'pg', '~> 0.2'
-  gem 'rails_12factor'
+  # gem 'rails_12factor'
 end
 
 gem 'faraday', '1.8.0'  # in main group; simplifies calling TMDb
