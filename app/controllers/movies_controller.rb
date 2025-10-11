@@ -45,7 +45,51 @@ class MoviesController < ApplicationController
     redirect_to movies_path
   end
 
+  def search_tmdb
+    if params[:search_terms]
+      # For the RSpec test
+      @movies = Movie.find_in_tmdb(params[:search_terms])
+    else
+      # For the actual form submission
+      # Validate required fields
+      if params[:title].blank?
+        flash[:danger] = "Please fill in all required fields!"
+        render :search_tmdb and return
+      end
+      
+      # Build search parameters hash
+      search_params = {
+        title: params[:title],
+        language: params[:language] || 'en'
+      }
+      search_params[:release_year] = params[:release_year] unless params[:release_year].blank?
+      
+      @movies = Movie.find_in_tmdb(search_params)
+      
+      # Check if no movies found
+      if @movies.nil? || @movies.empty?
+        flash[:warning] = "No movies found with given parameters!"
+      end
+    end
+    
+    render :search_tmdb
+  end
+
+  def add_tmdb_movie
+    @movie = Movie.create!(
+      title: params[:title],
+      release_date: params[:release_date],
+      rating: params[:rating]
+    )
+    flash[:notice] = "#{@movie.title} was successfully added to RottenPotatoes."
+    redirect_to search_tmdb_movies_path
+  end
+
   private
+  
+  def movie_params
+    params.require(:movie).permit(:title, :rating, :description, :release_date)
+  end
 
   def force_index_redirect
     return unless !params.key?(:ratings) || !params.key?(:sort_by)
@@ -66,4 +110,5 @@ class MoviesController < ApplicationController
   def sort_by
     params[:sort_by] || session[:sort_by] || 'id'
   end
+
 end
